@@ -2,121 +2,106 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Lokasi (Form)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Lokasi Realtime</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-  <div class="bg-white shadow-lg rounded-2xl p-6 max-w-2xl w-full">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Masukkan Koordinat</h2>
+<body class="bg-gray-100 p-6">
 
-    <form id="coordForm" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label for="lat" class="block text-sm font-medium text-gray-700">Latitude</label>
-          <input id="lat" name="lat" type="text" placeholder="-7.293684"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "  />
-        </div>
-        <div>
-          <label for="lng" class="block text-sm font-medium text-gray-700">Longitude</label>
-          <input id="lng" name="lng" type="text" placeholder="108.191615"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "  />
-        </div>
-      </div>
+<h1 class="text-2xl font-bold mb-4">Data Lokasi Realtime</h1>
 
-      <div class="flex flex-wrap gap-2">
-        <button type="submit"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">Tampilkan Peta</button>
-        <button id="openMaps" type="button"
-          class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow">Buka di Google Maps</button>
-        <button id="copyLink" type="button"
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow">Salin Link</button>
-      </div>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500 ">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+      <tr>
+        <th scope="col" class="px-6 py-3">Timestamp</th>
+        <th scope="col" class="px-6 py-3">Longitude</th>
+        <th scope="col" class="px-6 py-3">Latitude</th>
+        <th scope="col" class="px-6 py-3">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Data akan dimasukkan di sini -->
+    </tbody>
+  </table>
+</div>
 
-      <p id="err" class="text-red-600 text-sm"></p>
-    </form>
+<script>
+const apiUrl = "https://script.google.com/macros/s/AKfycbzi5dxCsfehVqPeM2ZAtDlh1JmBffrMpFprVx-mCv31wiTev8drSHS1OY3YDPqwXvKl/exec";
 
-    <p id="coords" class="text-gray-700 font-medium mt-4">Koordinat belum diisi.</p>
+// Format angka dengan titik ribuan untuk tabel
+function formatNumber(num) {
+  if(!num) return "";
+  let str = num.toString();
+  let negative = false;
+  if(str.startsWith("-")){
+    negative = true;
+    str = str.slice(1);
+  }
+  let result = "";
+  while(str.length > 3){
+    result = "." + str.slice(-3) + result;
+    str = str.slice(0, -3);
+  }
+  result = str + result;
+  return negative ? "-" + result : result;
+}
 
-    <div class="mt-4 rounded-lg overflow-hidden shadow">
-      <iframe id="mapFrame" class="w-full h-96 border-0" title="Peta lokasi"></iframe>
-    </div>
-  </div>
+// Parse koordinat untuk Maps (ubah menjadi desimal)
+function parseCoord(coordStr) {
+  if(!coordStr) return null;
+  return parseFloat(coordStr.replace(/\./g, '')) / 1000000;
+}
 
-  <script>
-    function normalizeNumber(input) {
-      if (input == null) return null;
-      const s = String(input).trim().replace(/\s+/g, '').replace(',', '.');
-      const n = parseFloat(s);
-      return (isFinite(n)) ? n : null;
-    }
-    function formatCoord(n) {
-      return (typeof n === 'number') ? n.toFixed(6) : n;
-    }
+function loadData() {
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
 
-    const params = new URLSearchParams(window.location.search);
-    const latInput = document.getElementById('lat');
-    const lngInput = document.getElementById('lng');
-    const form = document.getElementById('coordForm');
-    const errEl = document.getElementById('err');
-    const coordsEl = document.getElementById('coords');
-    const iframe = document.getElementById('mapFrame');
-    const openMapsBtn = document.getElementById('openMaps');
-    const copyLinkBtn = document.getElementById('copyLink');
+      data.forEach((row, index) => {
+        const timestamp = row["Timestamp"] || "";
 
-    if (params.get('lat')) latInput.value = params.get('lat');
-    if (params.get('lng')) lngInput.value = params.get('lng');
+        const longStr = row["Longtitude"] || "";
+        const latStr = row["Latittude"] || "";
 
-    function updateUI(latVal, lngVal) {
-      coordsEl.textContent = `Latitude: ${formatCoord(latVal)}, Longitude: ${formatCoord(lngVal)}`;
-      const embedUrl = `https://www.google.com/maps?q=${latVal},${lngVal}&output=embed`;
-      iframe.src = embedUrl;
+        const longDisplay = formatNumber(longStr.replace(/\D/g,'')); 
+        const latDisplay = formatNumber(latStr.replace(/\D/g,''));
 
-      openMapsBtn.onclick = () => {
-        window.open(`https://www.google.com/maps?q=${latVal},${lngVal}`, '_blank');
-      };
+        const longCoord = parseCoord(longStr);
+        const latCoord = parseCoord(latStr);
 
-      const newUrl = `${location.pathname}?lat=${encodeURIComponent(formatCoord(latVal))}&lng=${encodeURIComponent(formatCoord(lngVal))}`;
-      history.replaceState(null, '', newUrl);
-
-      copyLinkBtn.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          copyLinkBtn.textContent = 'Tersalin ✓';
-          setTimeout(() => copyLinkBtn.textContent = 'Salin Link', 1500);
-        } catch (e) {
-          copyLinkBtn.textContent = 'Gagal Salin';
-          setTimeout(() => copyLinkBtn.textContent = 'Salin Link', 1500);
+        let mapsEmbed = "";
+        if(longCoord !== null && latCoord !== null){
+          mapsEmbed = `<iframe 
+                          width="200" height="150" 
+                          class="mx-auto my-2 rounded"
+                          src="https://maps.google.com/maps?q=${latCoord},${longCoord}&z=15&output=embed" 
+                          loading="lazy">
+                       </iframe>`;
         }
-      };
-    }
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      errEl.textContent = '';
+        // gunakan kelas odd/even seperti tema
+        const rowClass = index % 2 === 0 ? "odd:bg-white" : "even:bg-gray-50";
+        const borderClass = "border-b border-gray-200";
 
-      const rawLat = latInput.value;
-      const rawLng = lngInput.value;
-      const latNum = normalizeNumber(rawLat);
-      const lngNum = normalizeNumber(rawLng);
+        tbody.innerHTML += `
+          <tr class="${rowClass} ${borderClass}">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${timestamp}</th>
+            <td class="px-6 py-4">${longDisplay}</td>
+            <td class="px-6 py-4">${latDisplay}</td>
+            <td class="px-6 py-4">${mapsEmbed}</td>
+          </tr>
+        `;
+      });
+    })
+    .catch(err => console.error(err));
+}
 
-      if (latNum === null || lngNum === null) {
-        errEl.textContent = 'Latitude atau Longitude tidak valid. Gunakan angka, contoh: -7.293684 atau -7,293684';
-        return;
-      }
+loadData();
+setInterval(loadData, 5000);
+</script>
 
-      updateUI(latNum, lngNum);
-    });
-
-    (function tryInitFromUrl() {
-      const rawLat = latInput.value;
-      const rawLng = lngInput.value;
-      if (!rawLat || !rawLng) return;
-      const latNum = normalizeNumber(rawLat);
-      const lngNum = normalizeNumber(rawLng);
-      if (latNum === null || lngNum === null) return;
-      updateUI(latNum, lngNum);
-    })();
-  </script>
 </body>
 </html>
