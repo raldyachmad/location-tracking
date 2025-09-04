@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Lokasi</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    iframe { width: 100%; height: 500px; border: none; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Lokasi Terkini</h2>
+  <p id="coords"></p>
+  <iframe id="mapFrame"></iframe>
+
+  <script>
+    // Ambil parameter dari URL
+    const params = new URLSearchParams(window.location.search);
+    const lat = params.get("lat");
+    const lng = params.get("lng");
+
+    if (lat && lng) {
+      document.getElementById("coords").innerText = `Latitude: ${lat}, Longitude: ${lng}`;
+
+      // buat embed Google Maps
+      const embedUrl = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+      document.getElementById("mapFrame").src = embedUrl;
+    } else {
+      document.getElementById("coords").innerText = "Parameter tidak valid!";
+    }
+  </script>
+</body>
+</html>
