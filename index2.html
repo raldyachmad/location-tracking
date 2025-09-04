@@ -26,7 +26,7 @@
     </style>
   </head>
   <body class="flex items-center justify-center bg-zinc-900">
-    <section class="h-dvh bg-white w-full max-w-[500px] relative">
+    <section class="h-dvh bg-white w-full max-w-[500px] relative overflow-auto scrollbar-hide">
       <div
         class="w-full bg-linear-to-b from-emerald-600 to-yellow-500 h-50 relative"
       >
@@ -236,6 +236,12 @@
             </div>
           </div>
         </section>
+        <section>
+          <header class="flex items-center justify-between my-4">
+            <h3 class="text-sm font-semibold">Favorit</h3>
+          </header>
+          <div class="bg-zinc-200 w-full h-50 rounded-lg animate-pulse"></div>
+        </section>
       </div>
       <div
         class="absolute bottom-0 left-0 w-full p-4 bg-white shadow-[0_-4px_6px_rgba(0,0,0,0.1)] flex justify-between gap-4"
@@ -254,7 +260,9 @@
             <span class="bg-zinc-200 h-2 w-10 animate-pulse"></span>
           </div>
         </div>
-        <div class="w-full flex justify-center absolute left-1/2 -translate-x-1/2">
+        <div
+          class="w-full flex justify-center absolute left-1/2 -translate-x-1/2"
+        >
           <div
             class="h-12 w-12 bg-zinc-300 rounded-xl animate-pulse -mt-8 absolute"
           ></div>
